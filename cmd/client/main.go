@@ -95,8 +95,8 @@ func main() {
 
 	//getUser(conn, "10")
 	//listUsers(conn, "1", 5)
-	//createUser(conn, "Jake@mail.com", "1488")
+	//createUser(conn, "Poul@mail.com", "0001")
 	//updateUser(conn, "1", "John")
 	//deleteUser(conn, "1")
-	getSesseionId(conn, "Jake@mail.com", "1488")
+	getSesseionId(conn, "Poul@mail.com", "0000")
 }
