@@ -1,0 +1,4 @@
+Generate file to pkg/api
+export PATH=$PATH:$HOME/go/bin
+export PATH=$PATH:/usr/local/go/bin
+protoc -I=./proto --go_out=plugins=grpc:pkg/api proto/user.proto
