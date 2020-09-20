@@ -23,6 +23,16 @@ var (
 	customFunc   grpc_logrus.CodeToLevel
 )
 
+func getAccesibleMethods() []string {
+	methods := []string{
+		"/UserService/" + "GetUser",
+		"/UserService/" + "DeleteUser",
+		"/UserService/" + "ListUsers",
+		"/UserService/" + "UpdateUser",
+	}
+	return methods
+}
+
 func main() {
 	addr := "0.0.0.0:8080"
 	lis, err := net.Listen("tcp", addr)
@@ -45,20 +55,7 @@ func main() {
 	// ),
 	// )
 
-	s := grpc.NewServer()
-
-	// TODO: Replace with your own certificate!
-	//grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
-
-	//Move sql open somewhere
-	db, err := sql.Open("postgres", "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable")
-
-	if err != nil {
-		log.Fatal(err)
-		//panic(err)
-	}
-
-	repo := rp.NewPsqlREpository(db)
+	//Redis
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -74,6 +71,26 @@ func main() {
 	defer rdb.Close()
 
 	redisRepo := rp.NewRedisRepository(rdb)
+
+	//MiddleWare
+
+	interceptor := logic.NewAuthUserInterceptor(redisRepo, getAccesibleMethods())
+	serverOptions := []grpc.ServerOption{grpc.UnaryInterceptor(interceptor.Unary())}
+
+	s := grpc.NewServer(serverOptions...)
+
+	// TODO: Replace with your own certificate!
+	//grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
+
+	//Move sql open somewhere
+	db, err := sql.Open("postgres", "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable")
+
+	if err != nil {
+		log.Fatal(err)
+		//panic(err)
+	}
+
+	repo := rp.NewPsqlREpository(db)
 
 	pb.RegisterUserServiceServer(s, logic.NewUserServer(repo, redisRepo))
 
