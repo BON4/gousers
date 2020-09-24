@@ -34,6 +34,8 @@ func getAccesibleMethods() []string {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	addr := "0.0.0.0:8080"
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -58,7 +60,7 @@ func main() {
 	//Redis
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redishost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
@@ -83,7 +85,7 @@ func main() {
 	//grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 
 	//Move sql open somewhere
-	db, err := sql.Open("postgres", "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable")
+	db, err := sql.Open("postgres", "host=psqlhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable")
 
 	if err != nil {
 		log.Fatal(err)

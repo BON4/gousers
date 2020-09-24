@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    container_name: psqlhost
+    image: postgres
+    environment:
+      POSTGRES_DB: gousers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:      
+      - "5432:5432"
+  redis:  
+    container_name: redishost
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf --port 6379 --daemonize yes
+    volumes:
+        - ./redis-data:/var/lib/redis
+        - ./redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+        - REDIS_REPLICATION_MODE=master
+    ports:
+        - "6379:6379"      
+  app:
+    container_name: app
+    build: .
+    command: ["./wait-for-it.sh", "db:5432", "--", "go", "run", "main.go"]
+    volumes:
+      - .:/go/test/res
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis

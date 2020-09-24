@@ -6,6 +6,7 @@ import (
 
 	pb "user-grpc/pkg/api"
 	rp "user-grpc/repo"
+	utils "user-grpc/utils"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
@@ -41,6 +42,7 @@ func (u *UserServer) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*
 }
 
 func (u *UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+	//TODO should be in middleware
 	if len(req.GetId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
 	}
@@ -56,7 +58,13 @@ func (u *UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.U
 }
 
 func (u *UserServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
+	//TODO should be in middleware
 	if len(req.GetUser().GetEmail()) == 0 || len(req.GetUser().GetPassword()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
+	}
+
+	//TODO should be in middleware
+	if !utils.VerifyEmail(req.GetUser().GetEmail()) {
 		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
 	}
 
@@ -71,7 +79,13 @@ func (u *UserServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) 
 }
 
 func (u *UserServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.User, error) {
+	//TODO should be in middleware
 	if len(req.GetUser().GetEmail()) == 0 || len(req.GetUser().GetId()) == 0 || len(req.GetUser().GetPassword()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
+	}
+
+	//TODO should be in middleware
+	if !utils.VerifyEmail(req.GetUser().GetEmail()) {
 		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
 	}
 
@@ -86,6 +100,7 @@ func (u *UserServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) 
 }
 
 func (u *UserServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*empty.Empty, error) {
+	//TODO should be in middleware
 	if len(req.GetId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
 	}
@@ -101,7 +116,13 @@ func (u *UserServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) 
 }
 
 func (u *UserServer) AuthUser(ctx context.Context, req *pb.SessionAuthUserRequest) (*pb.SessionAuthUserResponse, error) {
+	//TODO should be in middleware
 	if len(req.GetUser().GetEmail()) == 0 || len(req.GetUser().GetPassword()) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
+	}
+
+	//TODO should be in middleware
+	if !utils.VerifyEmail(req.GetUser().GetEmail()) {
 		return nil, status.Error(codes.InvalidArgument, "Invalid credantials")
 	}
 

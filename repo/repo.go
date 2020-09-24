@@ -19,6 +19,7 @@ type Repository interface {
 
 type SessionRepository interface {
 	CreateSession(context.Context, *pb.SessionAuthUserRequest) (*pb.SessionAuthUserResponse, error)
+	VerifySession(context.Context, string) (bool, error)
 	//TODO
 	//UpdateSession(context.Context, ...) (...)
 }
