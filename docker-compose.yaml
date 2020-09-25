@@ -11,15 +11,7 @@ services:
       - "5432:5432"
   redis:  
     container_name: redishost
-    image: redis
-    command: redis-server /usr/local/etc/redis/redis.conf --port 6379 --daemonize yes
-    volumes:
-        - ./redis-data:/var/lib/redis
-        - ./redis.conf:/usr/local/etc/redis/redis.conf
-    environment:
-        - REDIS_REPLICATION_MODE=master
-    ports:
-        - "6379:6379"      
+    image: redis:alpine     
   app:
     container_name: app
     build: .
@@ -34,3 +26,5 @@ services:
     links:
       - db
       - redis
+    environment:
+      REDIS_URL: redishost:6379

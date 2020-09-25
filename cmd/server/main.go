@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"net"
+	"os"
 
 	pb "user-grpc/pkg/api"
 	"user-grpc/pkg/logic"
@@ -60,7 +61,7 @@ func main() {
 	//Redis
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redishost:6379",
+		Addr:     os.Getenv("REDIS_URL"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

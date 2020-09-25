@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	pb "user-grpc/pkg/api"
 	utils "user-grpc/utils"
@@ -20,7 +21,22 @@ type PsqlRepository struct {
 //NewPsqlREpository - create new Psql repo
 func NewPsqlREpository(database *sql.DB) Repository {
 	//TODO setup connection
+
+	//TODO move database init someware else
+	err := initTestDB(database)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &PsqlRepository{DB: database}
+}
+
+func initTestDB(db *sql.DB) error {
+	_, err := db.Exec("create table gousers(id serial not null, email varchar unique, password bytea)")
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //ListUsers - get list of users from psql gousers table with certain boarders. PageToken >= list >= PageSize
