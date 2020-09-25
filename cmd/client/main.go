@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 	pb "user-grpc/pkg/api"
 
 	"google.golang.org/grpc"
@@ -98,13 +99,13 @@ func main() {
 	}
 	defer conn.Close()
 
-	//sessionId := getSesseionId(conn, "Tony@maiul.com", "0003")
+	sessionId := getSesseionId(conn, "Richi@maiul.com", "0004")
 	//getUser(conn, "10")
-	// for i := 0; i < 50; i++ {
-	// 	time.Sleep(time.Second * 1)
-	// 	listUsers(conn, "1", 5, sessionId)
-	// }
-	createUser(conn, "Richi@maiul.com", "0004")
+	for i := 0; i < 50; i++ {
+		time.Sleep(time.Second * 1)
+		listUsers(conn, "1", 5, sessionId)
+	}
+	//createUser(conn, "Richi@maiul.com", "0004")
 	//updateUser(conn, "1", "John")
 	//deleteUser(conn, "1")
 	//log.Println(sessionId)
